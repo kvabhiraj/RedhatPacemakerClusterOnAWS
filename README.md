@@ -18,4 +18,6 @@ Pre-requisites
 
 Clone the GIT repository 
 ==============================================================
+git clone -b main https://github.com/kvabhiraj/RedhatPacemakerClusterOnAWS.git
+cd RedhatPacemakerClusterOnAWS
 
