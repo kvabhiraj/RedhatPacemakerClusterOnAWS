@@ -27,3 +27,5 @@ Initiate IAC to deploy EC2 instances
 terraform init \
 terraform plan \
 terraform apply -auto-approve \
+
+To be continued
