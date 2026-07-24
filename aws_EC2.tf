@@ -26,8 +26,6 @@ resource "aws_instance" "example" {
   count                  = var.server_count
   tags = {
     Name = "server0${count.index}"
-    # Name = "server01"
-    # Name = var.servername
   }
   ########## Disk
   root_block_device {
