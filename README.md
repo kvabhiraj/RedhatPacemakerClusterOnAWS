@@ -14,6 +14,8 @@ Pre-requisites
 03. Install and configure terraform \
 	a. Install Terraform \
 		https://developer.hashicorp.com/terraform/install \
+
+
 Clone the GIT repository \
 ==============================================================
 
