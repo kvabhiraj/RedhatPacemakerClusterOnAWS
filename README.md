@@ -16,6 +16,6 @@ Pre-requisites
 		https://developer.hashicorp.com/terraform/install \
 
 
-Clone the GIT repository \
+Clone the GIT repository 
 ==============================================================
 
