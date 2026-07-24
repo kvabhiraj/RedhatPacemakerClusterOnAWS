@@ -1,4 +1,4 @@
-		Redhat Pacemaker HA Cluster on AWS (RHEL9)
+		Redhat Pacemaker HA Cluster on AWS (RHEL9 - 2 node)
 Pre-requisites
 ==============================================================
 01. Install and configure AWS CLI in your system (Linux / Mac) \
@@ -21,3 +21,9 @@ Clone the GIT repository
 git clone -b main https://github.com/kvabhiraj/RedhatPacemakerClusterOnAWS.git \
 cd RedhatPacemakerClusterOnAWS \
 
+
+Initiate IAC to deploy EC2 instances
+==============================================================
+terraform init \
+terraform plan \
+terraform apply -auto-approve \
