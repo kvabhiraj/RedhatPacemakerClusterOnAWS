@@ -6,4 +6,7 @@ Pre-requisites
 		https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html \
 	b. Authenticating using IAM user credentials for the AWS CLI \
 		https://docs.aws.amazon.com/cli/v1/userguide/cli-authentication-user.html \
+02. Install and configure GIT \
+	a.  Install GIT \
+		https://github.com/git-guides/install-git
 
