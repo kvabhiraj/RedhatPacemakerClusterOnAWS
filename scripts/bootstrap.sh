@@ -26,7 +26,7 @@
 HOSTNAME=$(/usr/bin/curl -s http://169.254.169.254/latest/meta-data/tags/instance/Name);/usr/bin/hostnamectl --static set-hostname $HOSTNAME
 
 # Network Static IP configuration
-DEV=$(/usr/bin/nmcli con show|egrep -v "loopback|DEVICE"|awk '{print $5}')
+DEV=$(/usr/bin/nmcli con show|egrep -v "loopback|DEVICE"|awk '{print $4}')
 IP=$(/usr/sbin/ip a|grep -i inet|grep ens5|awk '{print $2}')
 GW=$(/usr/bin/netstat -nr| awk '{print $2}' |egrep -v "IP|Gateway|0.0.0.0")
 DNS=$(/usr/bin/cat /etc/resolv.conf |grep nameserver|awk '{print $2}')

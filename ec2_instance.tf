@@ -54,7 +54,7 @@ resource "aws_instance" "example" {
 
 }
 
-############### Generate hosts file
+############### Generate /etc/hosts file
 
 resource "local_file" "hosts_cfg" {
   content = templatefile("${path.module}/hosts.tpl", {
