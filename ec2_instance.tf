@@ -41,7 +41,7 @@ resource "aws_instance" "example" {
     inline = [
       "sudo chmod -R +x /var/tmp/scripts",
       "sudo /var/tmp/scripts/bootstrap.sh",
-      "sudo /var/tmp/scripts/cluster_setup.sh"
+      #  "sudo /var/tmp/scripts/cluster_setup.sh"
 
     ]
   }
@@ -87,6 +87,40 @@ resource "null_resource" "copy_hosts" {
   }
 }
 
+############### Collect Instance ID for stonith
+
+resource "local_file" "instance_details" {
+  filename = "${path.module}/instances.txt"
+  content  = <<EOT
+  %{for instance in aws_instance.example~}
+  ${instance.tags.Name} : ${instance.id}
+  %{endfor~}
+  EOT
+}
+
+resource "null_resource" "UpdateInstanceID" {
+  depends_on = [local_file.instance_details]
+  for_each   = { for idx, instance in aws_instance.example : idx => instance }
+  provisioner "file" {
+    source      = "${path.module}/instances.txt"
+    destination = "/var/tmp/instances.txt"
+  }
+
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file("id_rsa")
+    host        = each.value.public_ip
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo cat /var/tmp/instances.txt | sudo tee -a /var/tmp/instances.txt",
+      "sudo /var/tmp/scripts/cluster_setup.sh"
+    ]
+  }
+
+}
 ############### VPC
 
 resource "aws_vpc" "my_vpc" {
