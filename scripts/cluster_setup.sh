@@ -12,4 +12,7 @@ if [ "$ServerName" == "server00" ]; then
   /usr/sbin/pcs cluster enable --all
   /usr/sbin/pcs property set stonith-enabled=true
   /usr/sbin/pcs property set no-quorum-policy=ignore
+  /usr/bin/sed -z 's/\n/\;/g; s/..$//' /var/tmp/instances| sed 's/ //g' | sed 's/.$//' > /var/tmp/InstanceID
+  /usr/bin/sed -z 's/\n//g; s/..$//' aASKey
+  /usr/sbin/pcs stonith create clusterfence fence_aws region=us-east-1 pcmk_reboot_action=reboot pcmk_host_map=$(cat /var/tmp/InstanceID) $(cat /var/tmp/aASKey)
 fi

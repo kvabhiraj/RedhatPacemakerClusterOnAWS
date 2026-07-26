@@ -4,123 +4,6 @@ resource "aws_key_pair" "abhirajkv_key" {
   key_name   = "abhirajkv"
   public_key = file("id_rsa.pub")
 }
-############### Main EC2 Instance
-
-resource "aws_instance" "example" {
-  metadata_options {
-    http_endpoint          = "enabled"
-    instance_metadata_tags = "enabled"
-  }
-  ami                         = "ami-02d36f7d2eae66e8f"
-  instance_type               = "t3.medium"
-  subnet_id                   = aws_subnet.Private.id
-  private_ip                  = "10.0.3.${count.index + 10}"
-  associate_public_ip_address = true
-  key_name                    = aws_key_pair.abhirajkv_key.key_name
-  vpc_security_group_ids      = [aws_security_group.port_whitelisting.id, aws_security_group.AllowICMP.id, aws_security_group.heartbeat_whitelisting.id]
-  count                       = var.server_count
-
-  tags = {
-    Name = "server0${count.index}"
-  }
-  ############### Bootstrap
-
-  connection {
-    type        = "ssh"
-    user        = "ec2-user"
-    private_key = file("id_rsa")
-    host        = self.public_ip
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/scripts"
-    destination = "/var/tmp/"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo chmod -R +x /var/tmp/scripts",
-      "sudo /var/tmp/scripts/bootstrap.sh",
-      #  "sudo /var/tmp/scripts/cluster_setup.sh"
-
-    ]
-  }
-
-  root_block_device {
-    volume_size = 30
-    volume_type = "gp3"
-    encrypted   = true
-  }
-
-}
-
-############### Generate /etc/hosts file
-
-resource "local_file" "hosts_cfg" {
-  content = templatefile("${path.module}/hosts.tpl", {
-    count_nb = length(aws_instance.example)
-    ips      = aws_instance.example[*].private_ip
-    names    = aws_instance.example[*].tags.Name
-  })
-  filename = "${path.module}/hosts_append"
-}
-
-resource "null_resource" "copy_hosts" {
-  depends_on = [local_file.hosts_cfg]
-  for_each   = { for idx, instance in aws_instance.example : idx => instance }
-  provisioner "file" {
-    source      = "${path.module}/hosts_append"
-    destination = "/var/tmp/hosts_append"
-  }
-  connection {
-    type        = "ssh"
-    user        = "ec2-user"
-    private_key = file("id_rsa")
-    host        = each.value.public_ip
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo cat /var/tmp/hosts_append | sudo tee -a /etc/hosts",
-      "sudo rm -rf /var/tmp/hosts_append"
-    ]
-  }
-}
-
-############### Collect Instance ID for stonith
-
-resource "local_file" "instance_details" {
-  filename = "${path.module}/instances.txt"
-  content  = <<EOT
-  %{for instance in aws_instance.example~}
-  ${instance.tags.Name} : ${instance.id}
-  %{endfor~}
-  EOT
-}
-
-resource "null_resource" "UpdateInstanceID" {
-  depends_on = [local_file.instance_details]
-  for_each   = { for idx, instance in aws_instance.example : idx => instance }
-  provisioner "file" {
-    source      = "${path.module}/instances.txt"
-    destination = "/var/tmp/instances.txt"
-  }
-
-  connection {
-    type        = "ssh"
-    user        = "ec2-user"
-    private_key = file("id_rsa")
-    host        = each.value.public_ip
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo cat /var/tmp/instances.txt | sudo tee -a /var/tmp/instances.txt",
-      "sudo /var/tmp/scripts/cluster_setup.sh"
-    ]
-  }
-
-}
 ############### VPC
 
 resource "aws_vpc" "my_vpc" {
@@ -211,9 +94,122 @@ resource "aws_security_group" "heartbeat_whitelisting" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+############### Main EC2 Instance
 
+resource "aws_instance" "example" {
+  metadata_options {
+    http_endpoint          = "enabled"
+    instance_metadata_tags = "enabled"
+  }
+  ami                         = "ami-02d36f7d2eae66e8f"
+  instance_type               = "t3.medium"
+  subnet_id                   = aws_subnet.Private.id
+  private_ip                  = "10.0.3.${count.index + 10}"
+  associate_public_ip_address = true
+  key_name                    = aws_key_pair.abhirajkv_key.key_name
+  vpc_security_group_ids      = [aws_security_group.port_whitelisting.id, aws_security_group.AllowICMP.id, aws_security_group.heartbeat_whitelisting.id]
+  count                       = var.server_count
 
+  tags = {
+    Name = "server0${count.index}"
+  }
+  ############### Bootstrap
 
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file("id_rsa")
+    host        = self.public_ip
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/scripts"
+    destination = "/var/tmp/"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo chmod -R +x /var/tmp/scripts",
+      "sudo /var/tmp/scripts/bootstrap.sh",
+
+    ]
+  }
+  root_block_device {
+    volume_size = 30
+    volume_type = "gp3"
+    encrypted   = true
+  }
+
+}
+
+############### Generate /etc/hosts file
+
+resource "local_file" "hosts_cfg" {
+  content = templatefile("${path.module}/scripts/hosts.tpl", {
+    count_nb = length(aws_instance.example)
+    ips      = aws_instance.example[*].private_ip
+    names    = aws_instance.example[*].tags.Name
+  })
+  filename = "${path.module}/hosts_append"
+}
+
+############### Collect Instance ID for stonith
+
+resource "local_file" "instance_details" {
+  filename = "${path.module}/instances"
+  content  = <<EOT
+  %{for instance in aws_instance.example~}
+  ${instance.tags.Name}:${instance.id}
+  %{endfor~}
+  EOT
+}
+
+############### Collect Cluster node names for cluster configuration
+
+resource "local_file" "clus_member" {
+  filename = "${path.module}/clus_member"
+  content  = <<EOT
+  %{for instance in aws_instance.example~}
+  ${instance.tags.Name}
+  %{endfor~}
+  EOT
+}
+
+############### Copy File to all instances and update /etc/hosts, instance details for stonith and create cluster 
+
+resource "null_resource" "copy_files" {
+  depends_on = [local_file.hosts_cfg, local_file.instance_details, local_file.clus_member]
+  for_each   = { for idx, instance in aws_instance.example : idx => instance }
+  provisioner "file" {
+    source      = "${path.module}/hosts_append"
+    destination = "/var/tmp/hosts_append"
+  }
+  provisioner "file" {
+    source      = "${path.module}/instances"
+    destination = "/var/tmp/instances"
+  }
+  provisioner "file" {
+    source      = "${path.module}/clus_member"
+    destination = "/var/tmp/clus_member"
+  }
+  provisioner "file" {
+    source      = "${path.module}/aASKey"
+    destination = "/var/tmp/aASKey"
+  }
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file("id_rsa")
+    host        = each.value.public_ip
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo cat /var/tmp/hosts_append | sudo tee -a /etc/hosts",
+      "sudo /var/tmp/scripts/cluster_setup.sh",
+      "sudo rm -rf /var/tmp/hosts_append"
+    ]
+  }
+}
 
 ############### output
 output "Public_IP" {
