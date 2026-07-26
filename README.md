@@ -19,16 +19,18 @@ Pre-requisites
 Clone the GIT repository 
 ==============================================================
 git clone -b main https://github.com/kvabhiraj/RedhatPacemakerClusterOnAWS.git \
-cd RedhatPacemakerClusterOnAWS 
+ 
 
 
 Initiate IAC to deploy EC2 instances
 ==============================================================
 01. Update AWS Access Key & Secret Access Key in file aASKey \
-02. Run bellow given terraform commands \
-terraform init \
-terraform plan \
-terraform apply -auto-approve 
+    cd RedhatPacemakerClusterOnAWS \
+    vi aASKey \
+3. Run bellow given terraform commands \
+    terraform init \
+    terraform plan \
+    terraform apply -auto-approve 
 
 To be continued
 ==============================================================
