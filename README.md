@@ -26,7 +26,7 @@ Initiate IAC to deploy EC2 instances
 ==============================================================
 01. Update AWS Access Key & Secret Access Key in file aASKey \
     cd RedhatPacemakerClusterOnAWS \
-    vi aASKey \
+    vi aASKey
 3. Run bellow given terraform commands \
     terraform init \
     terraform plan \
