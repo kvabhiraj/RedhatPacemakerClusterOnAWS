@@ -24,6 +24,9 @@ cd RedhatPacemakerClusterOnAWS
 
 Initiate IAC to deploy EC2 instances
 ==============================================================
+Update AWS Access Key & Secret Access Key in file aASKey \
+
+
 terraform init \
 terraform plan \
 terraform apply -auto-approve 
