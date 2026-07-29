@@ -1,4 +1,4 @@
-/usr/bin/dnf install -y pacemaker corosync pcs fence-agents-aws
+/usr/bin/dnf install -y pacemaker corosync pcs fence-agents-aws resource-agents-cloud resource-agents
 /usr/bin/systemctl enable pcsd --now
 /usr/bin/echo R3dh@tPa55 | /usr/bin/passwd hacluster --stdin
 ServerName=$(hostname)
