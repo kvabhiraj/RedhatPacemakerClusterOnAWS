@@ -20,7 +20,7 @@ Clone the GIT repository
 ==============================================================
 
 01. Redhat pacemaker high-availability cluster (Active-passive) # Baseline \
-    git clone -b main https://github.com/kvabhiraj/RedhatPacemakerClusterOnAWS.git \
+    git clone -b main https://github.com/kvabhiraj/RedhatPacemakerClusterOnAWS.git 
 02. Redhat pacemaker high-availability cluster (Active-passive) # Web server using httpd \
  	git clone -b WebServer https://github.com/kvabhiraj/RedhatPacemakerClusterOnAWS.git
 
