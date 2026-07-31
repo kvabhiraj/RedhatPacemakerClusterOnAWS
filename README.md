@@ -18,8 +18,11 @@ Pre-requisites
 
 Clone the GIT repository 
 ==============================================================
-git clone -b main https://github.com/kvabhiraj/RedhatPacemakerClusterOnAWS.git
- 
+
+01. Redhat pacemaker high-availability cluster (Active-passive) # Baseline \
+    git clone -b main https://github.com/kvabhiraj/RedhatPacemakerClusterOnAWS.git \
+02. Redhat pacemaker high-availability cluster (Active-passive) # Web server using httpd \
+ 	git clone -b WebServer https://github.com/kvabhiraj/RedhatPacemakerClusterOnAWS.git
 
 
 Initiate IAC to deploy EC2 instances
@@ -32,5 +35,5 @@ Initiate IAC to deploy EC2 instances
     terraform plan \
     terraform apply -auto-approve 
 
-To be continued
+To be continued with updates
 ==============================================================
