@@ -21,7 +21,7 @@ Clone the GIT repository
 
 01. Redhat pacemaker high-availability cluster (Active-passive) # Baseline \
     git clone -b main https://github.com/kvabhiraj/RedhatPacemakerClusterOnAWS.git 
-02. Redhat pacemaker high-availability cluster (Active-passive) # Web server using httpd \
+02. Redhat pacemaker high-availability cluster (Active-passive) # Web server using httpd 
  	git clone -b WebServer https://github.com/kvabhiraj/RedhatPacemakerClusterOnAWS.git
 
 
@@ -41,7 +41,7 @@ Initiate IAC to deploy EC2 instances
     ssh -i id_rsa ec2-user@<Public_IP_of_EC2_Instance> \
 	or \
 	ssh -o StrictHostKeyChecking=no -i id_rsa ec2-user@<Public_IP_of_EC2_Instance> \
-6. Access the website from the nodes
+6. Access the website from the nodes \
    	curl http://192.168.100.100
 
 To be continued with updates
