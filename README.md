@@ -33,8 +33,8 @@ Initiate IAC to deploy EC2 instances
 02. Run bellow given terraform commands \
     terraform init \
     terraform plan \
-    terraform apply -auto-approve \
-03. If getting bellow error, just re-run "terraform apply -auto-approve" \
+    terraform apply -auto-approve
+03. If getting bellow error, just re-run "terraform apply -auto-approve" 
 
 	<img width="1170" height="498" alt="image" src="https://github.com/user-attachments/assets/3cca27dc-7901-4e9d-9fd4-3ab98ab608b1" />
 
