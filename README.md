@@ -38,9 +38,9 @@ Initiate IAC to deploy EC2 instances
     <img width="1170" height="498" alt="image" src="https://github.com/user-attachments/assets/c883c46f-463c-431d-8389-f59bb6a9b16f" />
 04. Access the cluster node
    
-    ssh -i id_rsa ec2-user@<Public_IP_of_EC2_Instance> 
-	or 
-	ssh -o StrictHostKeyChecking=no -i id_rsa ec2-user@<Public_IP_of_EC2_Instance> 
+    ssh -i id_rsa ec2-user@<Public_IP_of_EC2_Instance> \
+	or \
+	ssh -o StrictHostKeyChecking=no -i id_rsa ec2-user@<Public_IP_of_EC2_Instance> \
 6. Access the website from the nodes
    	curl http://192.168.100.100
 
