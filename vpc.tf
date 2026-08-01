@@ -21,8 +21,12 @@ resource "aws_eip" "public_ip" {
 ############### VPC
 
 resource "aws_vpc" "my_vpc" {
-  cidr_block         = "10.0.0.0/16"
-  enable_dns_support = true
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+  tags = {
+    Name = "MyVPC"
+  }
 }
 resource "aws_subnet" "Private" {
   vpc_id            = aws_vpc.my_vpc.id
@@ -36,7 +40,7 @@ resource "aws_internet_gateway" "IGW" {
 }
 ############### Secondary route table for Private subnet
 
-resource "aws_route_table" "Secondary" {
+resource "aws_route_table" "Route_Table" {
   vpc_id = aws_vpc.my_vpc.id
   route {
     cidr_block = "0.0.0.0/0"
@@ -44,11 +48,11 @@ resource "aws_route_table" "Secondary" {
   }
 }
 
-############### Associate Private subnet to Secondary route table
+############### Associate Private subnet to route table
 
 resource "aws_route_table_association" "Secondary_route_alloc" {
   subnet_id      = aws_subnet.Private.id
-  route_table_id = aws_route_table.Secondary.id
+  route_table_id = aws_route_table.Route_Table.id
 }
 
 ############### Security Group
@@ -108,3 +112,5 @@ resource "aws_security_group" "heartbeat_whitelisting" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+

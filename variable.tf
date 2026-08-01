@@ -12,8 +12,3 @@ variable "heartbeat" {
   type    = list(number)
   default = [5405, 5406, 9929]
 }
-# Pacemaker VIP configuration
-variable "vip_overlay_ip" {
-  type    = string
-  default = "192.168.2.101/32"
-}

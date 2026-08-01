@@ -1,7 +1,7 @@
 ############### ssh Key Pair
 
-resource "aws_key_pair" "abhirajkv_key" {
-  key_name   = "abhirajkv"
+resource "aws_key_pair" "ec2-user_key" {
+  key_name   = "ec2-user_key"
   public_key = file("id_rsa.pub")
 }
 
@@ -12,18 +12,22 @@ resource "aws_instance" "example" {
     http_endpoint          = "enabled"
     instance_metadata_tags = "enabled"
   }
-  ami           = "ami-02d36f7d2eae66e8f"
-  instance_type = "t3.medium"
+  count                = var.server_count
+  ami                  = "ami-02d36f7d2eae66e8f"
+  instance_type        = "t3.medium"
+  key_name             = aws_key_pair.ec2-user_key.key_name
+  iam_instance_profile = aws_iam_instance_profile.pacemaker_profile.name
   primary_network_interface {
     network_interface_id = aws_network_interface.Nic[count.index].id
   }
-  key_name = aws_key_pair.abhirajkv_key.key_name
-  count    = var.server_count
-
+  root_block_device {
+    volume_size = "40"
+    volume_type = "gp3"
+    encrypted   = true
+  }
   tags = {
     Name = "server0${count.index}"
   }
-
 }
 
 ############### EBS volume
@@ -63,7 +67,7 @@ resource "local_file" "instance_details" {
   EOT
 }
 
-############### Collect Cluster node names for cluster configuration
+############### Collect Cluster node names and route ID cluster configuration 
 
 resource "local_file" "clus_member" {
   filename = "${path.module}/clus_member"
@@ -73,12 +77,27 @@ resource "local_file" "clus_member" {
   %{endfor~}
   EOT
 }
+resource "local_file" "Route_ID" {
+  filename = "${path.module}/Route_ID"
+  content  = aws_route_table.Route_Table.id
+}
 
 ############### Copy File to all instances and update /etc/hosts, instance details for stonith and create cluster 
 
+resource "time_sleep" "wait_30_seconds" {
+  depends_on      = [aws_instance.example, aws_eip.public_ip, local_file.instance_details, local_file.clus_member]
+  create_duration = "30s"
+}
+
 resource "null_resource" "copy_files" {
-  depends_on = [local_file.hosts_cfg, local_file.instance_details, local_file.clus_member]
-  for_each   = { for idx, instance in aws_instance.example : idx => instance }
+  depends_on = [time_sleep.wait_30_seconds]
+  count      = var.server_count
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file("id_rsa")
+    host        = aws_eip.public_ip[count.index].public_ip
+  }
   provisioner "file" {
     source      = "${path.module}/scripts"
     destination = "/var/tmp/"
@@ -99,25 +118,52 @@ resource "null_resource" "copy_files" {
     source      = "${path.module}/aASKey"
     destination = "/var/tmp/aASKey"
   }
-  connection {
-    type        = "ssh"
-    user        = "ec2-user"
-    private_key = file("id_rsa")
-    host        = aws_instance.example[each.key].public_ip
+  provisioner "file" {
+    source      = "${path.module}/authorized_keys"
+    destination = "/var/tmp/authorized_keys"
   }
+  provisioner "file" {
+    source      = "${path.module}/Route_ID"
+    destination = "/var/tmp/Route_ID"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "sudo cat /var/tmp/hosts_append | sudo tee -a /etc/hosts",
       "sudo chmod -R +x /var/tmp/scripts",
       "sudo /var/tmp/scripts/bootstrap.sh",
       "sudo /var/tmp/scripts/cluster_setup.sh",
-      "sudo rm -rf /var/tmp/hosts_append"
+      "sudo rm -rf /var/tmp/hosts_append",
+      "sudo mkdir /home/abhirajkv/.ssh",
+      "sudo cp /var/tmp/authorized_keys /home/abhirajkv/.ssh/authorized_keys",
+      "sudo chmod -R 600 /home/abhirajkv/.ssh",
+      "sudo chown -R abhirajkv:abhirajkv /home/abhirajkv",
+      "sudo rm -rf /var/tmp/authorized_keys"
     ]
   }
 }
 
 
+
+############### VIP Route for Pacemaker Cluster
+
+# 1.Create the placeholder route for your Virtual IP
+
+resource "aws_route" "pacemaker_vip_route" {
+  depends_on             = [time_sleep.wait_30_seconds]
+  network_interface_id   = aws_network_interface.Nic[0].id
+  route_table_id         = aws_route_table.Route_Table.id
+  destination_cidr_block = "192.168.100.100/32"
+  # Prevents Terraform from reversing Pacemaker's route changes during failovers
+  lifecycle {
+    ignore_changes = [
+      network_interface_id
+    ]
+  }
+}
+
 ############### output
 output "Public_IP" {
-  value = aws_instance.example[*].public_ip
+  depends_on = [time_sleep.wait_30_seconds]
+  value      = aws_instance.example[*].public_ip
 }
