@@ -30,10 +30,13 @@ Initiate IAC to deploy EC2 instances
 01. Update AWS Access Key & Secret Access Key in file aASKey \
     cd RedhatPacemakerClusterOnAWS \
     vi aASKey
-3. Run bellow given terraform commands \
+02. Run bellow given terraform commands \
     terraform init \
     terraform plan \
-    terraform apply -auto-approve 
+    terraform apply -auto-approve
+03. If getting bellow error, just re-run "terraform apply -auto-approve" 
+    <img width="1170" height="498" alt="image" src="https://github.com/user-attachments/assets/c883c46f-463c-431d-8389-f59bb6a9b16f" />
+
 
 To be continued with updates
 ==============================================================
