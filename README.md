@@ -30,10 +30,29 @@ Initiate IAC to deploy EC2 instances
 01. Update AWS Access Key & Secret Access Key in file aASKey \
     cd RedhatPacemakerClusterOnAWS \
     vi aASKey
-3. Run bellow given terraform commands \
+02. Run bellow given terraform commands \
     terraform init \
     terraform plan \
-    terraform apply -auto-approve 
+    terraform apply -auto-approve \
+03. If getting bellow error just re-run "terraform apply -auto-approve" \
+    Error: file provisioner error
+│ 
+│   with null_resource.copy_files["1"],  \
+│   on ec2_instance.tf line 82, in resource "null_resource" "copy_files":  \
+│   82:   provisioner "file" {
+│ 
+│ host for provisioner cannot be empty
+╵
+╷
+│ Error: file provisioner error
+│ 
+│   with null_resource.copy_files["0"], 
+│   on ec2_instance.tf line 82, in resource "null_resource" "copy_files": \
+│   82:   provisioner "file" { \
+│ 
+│ host for provisioner cannot be empty
+
+
 
 To be continued
 ==============================================================
