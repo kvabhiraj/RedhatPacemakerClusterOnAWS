@@ -40,8 +40,11 @@ Initiate IAC to deploy EC2 instances
    	chmod 600 id_rsa \
     ssh -i id_rsa ec2-user@<Public_IP_of_EC2_Instance> \
 	or \
-	ssh -o StrictHostKeyChecking=no -i id_rsa ec2-user@<Public_IP_of_EC2_Instance> 
-6. Access the website from the nodes \
+	ssh -o StrictHostKeyChecking=no -i id_rsa ec2-user@<Public_IP_of_EC2_Instance>
+05. Run pcs status to check the cluster status
+    <img width="1224" height="744" alt="image" src="https://github.com/user-attachments/assets/cdbb4532-b013-4ed1-9536-3ff09f0715d0" />
+
+7. Access the website from the nodes \
    	curl http://192.168.100.100
 
 To be continued with updates
