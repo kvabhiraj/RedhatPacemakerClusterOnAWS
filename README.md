@@ -37,8 +37,8 @@ Initiate IAC to deploy EC2 instances
 03. If getting bellow error just re-run "terraform apply -auto-approve" \
     Error: file provisioner error
 │ 
-│   with null_resource.copy_files["1"],  \
-│   on ec2_instance.tf line 82, in resource "null_resource" "copy_files":  \
+│   with null_resource.copy_files["1"], \
+│   on ec2_instance.tf line 82, in resource "null_resource" "copy_files": \
 │   82:   provisioner "file" {
 │ 
 │ host for provisioner cannot be empty
