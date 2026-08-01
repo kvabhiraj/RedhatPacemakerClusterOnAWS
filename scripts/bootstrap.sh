@@ -7,15 +7,6 @@
 /usr/bin/echo "ClientAliveCountMax 10" | /usr/bin/tee -a /etc/ssh/sshd_config
 /usr/bin/systemctl restart sshd
 
-
-# Set user passwords
-/usr/sbin/useradd abhirajkv 
-/usr/bin/echo "Passwd_09"|passwd abhirajkv --stdin
-/usr/bin/echo "Passwd_09"|passwd ec2-user --stdin
-/usr/bin/echo "Passwd_09"|passwd root --stdin
-/usr/bin/echo "abhirajkv  ALL=(ALL)     NOPASSWD: ALL" > /etc/sudoers.d/abhirajkv
-
-
 # Enable epel repository
 /usr/bin/dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm -y
 /usr/bin/dnf clean all

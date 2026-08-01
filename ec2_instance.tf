@@ -122,24 +122,22 @@ resource "null_resource" "copy_files" {
     source      = "${path.module}/Route_ID"
     destination = "/var/tmp/Route_ID"
   }
+  provisioner "file" {
+    source      = "${path.module}/scripts/lvm.conf"
+    destination = "/var/tmp/lvm.conf"
+  }
 
   provisioner "remote-exec" {
     inline = [
       "sudo cat /var/tmp/hosts_append | sudo tee -a /etc/hosts",
       "sudo chmod -R +x /var/tmp/scripts",
       "sudo /var/tmp/scripts/bootstrap.sh",
+      "sudo mv -f /var/tmp/lvm.conf /etc/lvm/lvm.conf",
       "sudo /var/tmp/scripts/cluster_setup.sh",
-      "sudo rm -rf /var/tmp/hosts_append",
-      "sudo mkdir /home/abhirajkv/.ssh",
-      "sudo cp /var/tmp/authorized_keys /home/abhirajkv/.ssh/authorized_keys",
-      "sudo chmod -R 600 /home/abhirajkv/.ssh",
-      "sudo chown -R abhirajkv:abhirajkv /home/abhirajkv",
-      "sudo rm -rf /var/tmp/authorized_keys"
+      "sudo rm -rf /var/tmp/*"
     ]
   }
 }
-
-
 
 ############### VIP Route for Pacemaker Cluster
 
