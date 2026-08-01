@@ -34,23 +34,10 @@ Initiate IAC to deploy EC2 instances
     terraform init \
     terraform plan \
     terraform apply -auto-approve \
-03. If getting bellow error just re-run "terraform apply -auto-approve" \
-    Error: file provisioner error
-│ 
-│   with null_resource.copy_files["1"], \
-│   on ec2_instance.tf line 82, in resource "null_resource" "copy_files": \
-│   82:   provisioner "file" {
-│ 
-│ host for provisioner cannot be empty
-╵
-╷
-│ Error: file provisioner error
-│ 
-│   with null_resource.copy_files["0"], 
-│   on ec2_instance.tf line 82, in resource "null_resource" "copy_files": \
-│   82:   provisioner "file" { \
-│ 
-│ host for provisioner cannot be empty
+03. If getting bellow error, just re-run "terraform apply -auto-approve" \
+
+	<img width="1170" height="498" alt="image" src="https://github.com/user-attachments/assets/3cca27dc-7901-4e9d-9fd4-3ab98ab608b1" />
+
 
 
 
