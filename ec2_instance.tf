@@ -119,10 +119,6 @@ resource "null_resource" "copy_files" {
     destination = "/var/tmp/aASKey"
   }
   provisioner "file" {
-    source      = "${path.module}/authorized_keys"
-    destination = "/var/tmp/authorized_keys"
-  }
-  provisioner "file" {
     source      = "${path.module}/Route_ID"
     destination = "/var/tmp/Route_ID"
   }
