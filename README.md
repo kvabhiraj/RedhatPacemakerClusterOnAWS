@@ -1,4 +1,4 @@
-# Redhat Pacemaker HA Cluster on AWS (RHEL9 two-node cluster LAB environment)
+# Redhat Pacemaker active-passive HA cluster on AWS (RHEL10 two node cluster - LAB environment)
 Pre-requisites
 ==============================================================
 01. Install and configure AWS CLI in your system (Linux / Mac) \
@@ -55,5 +55,3 @@ Initiate IAC to deploy EC2 instances
 11. Access the website from the nodes \
    	curl http://192.168.100.100
 
-To be continued with updates
-==============================================================
