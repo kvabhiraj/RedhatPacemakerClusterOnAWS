@@ -1,4 +1,5 @@
-		Redhat Pacemaker HA Cluster on AWS (RHEL9 two-node cluster LAB environment)
+# RedhatPacemakerClusterOnAWS
+		Redhat Pacemaker HA Cluster on AWS (RHEL10 two-node cluster LAB environment)
 Pre-requisites
 ==============================================================
 01. Install and configure AWS CLI in your system (Linux / Mac) \
