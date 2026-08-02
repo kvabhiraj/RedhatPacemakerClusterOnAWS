@@ -1,4 +1,7 @@
 # Redhat Pacemaker active-passive HA cluster on AWS (RHEL10 - 2 node cluster - LAB environment) - IAC
+
+A Red Hat Pacemaker active-passive high availability (HA) cluster is a failover setup where an application or service runs on only one node (the active node) at a time while the other node (the passive or standby node) waits idle. If the active server fails, Pacemaker automatically moves the service and its floating IP address to the passive server
+
 Pre-requisites
 ==============================================================
 01. Install and configure AWS CLI in your system (Linux / Mac) \
