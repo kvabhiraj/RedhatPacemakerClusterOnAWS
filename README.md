@@ -30,21 +30,24 @@ Initiate IAC to deploy EC2 instances
 01. Update AWS Access Key & Secret Access Key in file aASKey \
     cd RedhatPacemakerClusterOnAWS \
     vi aASKey
-02. Run bellow given terraform commands \
+    
+3. Run bellow given terraform commands \
     terraform init \
     terraform plan \
-    terraform apply -auto-approve
-03. If getting bellow error, just re-run "terraform apply -auto-approve" 
+    terraform apply -auto-approve 
+    
+4. If we need more than 2 cluster node use the below give terraform apply command (Suppose for 3  cluster nodes) 
+    terraform apply **-var=server_count=3** -auto-approve 
+    
+5. If getting bellow error, just re-run "terraform apply -auto-approve" 
     <img width="1170" height="498" alt="image" src="https://github.com/user-attachments/assets/c883c46f-463c-431d-8389-f59bb6a9b16f" />
-04. Access the cluster node 
+6. Access the cluster node
    	chmod 600 id_rsa \
-    ssh -i id_rsa ec2-user@<Public_IP_of_EC2_Instance> \
-	or \
 	ssh -o StrictHostKeyChecking=no -i id_rsa ec2-user@<Public_IP_of_EC2_Instance>
-05. Run pcs status to check the cluster status
+7. Run pcs status to check the cluster status
     <img width="1224" height="744" alt="image" src="https://github.com/user-attachments/assets/cdbb4532-b013-4ed1-9536-3ff09f0715d0" />
 
-7. Access the website from the nodes \
+8. Access the website from the nodes \
    	curl http://192.168.100.100
 
 To be continued with updates
