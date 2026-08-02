@@ -1,4 +1,4 @@
-# Redhat Pacemaker 2 node active-passive HA cluster on AWS (RHEL10 two node cluster - LAB environment)
+# Redhat Pacemaker active-passive HA cluster on AWS (RHEL10 two node cluster - LAB environment)
 
 Pre-requisites
 ==============================================================
