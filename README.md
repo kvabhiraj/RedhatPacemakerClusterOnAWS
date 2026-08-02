@@ -40,15 +40,19 @@ Initiate IAC to deploy EC2 instances
    
     terraform apply **-var=server_count=3** -auto-approve 
     
-6. If getting bellow error, just re-run "terraform apply -auto-approve" 
+6. If getting bellow error, just re-run "terraform apply -auto-approve"
+   
     <img width="1170" height="498" alt="image" src="https://github.com/user-attachments/assets/c883c46f-463c-431d-8389-f59bb6a9b16f" />
-7. Access the cluster node
+	
+8. Access the cluster node
+   
    	chmod 600 id_rsa \
-	ssh -o StrictHostKeyChecking=no -i id_rsa ec2-user@<Public_IP_of_EC2_Instance>
-8. Run pcs status to check the cluster status
+	ssh -o StrictHostKeyChecking=no -i id_rsa ec2-user@<Public_IP_of_EC2_Instance> 
+	
+10. Run pcs status to check the cluster status
     <img width="1224" height="744" alt="image" src="https://github.com/user-attachments/assets/cdbb4532-b013-4ed1-9536-3ff09f0715d0" />
 
-9. Access the website from the nodes \
+11. Access the website from the nodes \
    	curl http://192.168.100.100
 
 To be continued with updates
