@@ -55,5 +55,4 @@ Initiate IAC to deploy EC2 instances
 11. Access the website from the nodes \
    	curl http://192.168.100.100
 
-To be continued with updates
 ==============================================================
