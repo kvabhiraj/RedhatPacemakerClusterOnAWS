@@ -19,7 +19,7 @@ HOSTNAME=$(/usr/bin/curl -s http://169.254.169.254/latest/meta-data/tags/instanc
 
 # Network Static IP configuration
 DEV=$(/usr/bin/nmcli con show|egrep -v "loopback|DEVICE"|awk '{print $5}')
-IP=$(/usr/sbin/ip a|grep -i inet|grep ens5|awk '{print $2}')
+IP=$(/usr/sbin/ip a|grep -i inet|grep $DEV|awk '{print $2}')
 GW=$(/usr/bin/netstat -nr| awk '{print $2}' |egrep -v "IP|Gateway|0.0.0.0")
 DNS=$(/usr/bin/cat /etc/resolv.conf |grep nameserver|awk '{print $2}')
 
